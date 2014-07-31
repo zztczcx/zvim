@@ -1,5 +1,7 @@
 autocmd! bufwritepost .vimrc source ~/.vimrc
 autocmd! BufReadPost Gemfile set ft=ruby
+
+set encoding=utf-8
 set showtabline=2
 set laststatus=2
 set guitablabel=%t
@@ -20,6 +22,7 @@ set shiftwidth=2
 set softtabstop=2
 
 set tabstop=2 shiftwidth=2 expandtab
+autocmd FileType python set tabstop=4|set shiftwidth=4|set expandtab
 "set backspace=4
 set ruler  
 set showcmd
@@ -90,6 +93,7 @@ map <f7> <esc>:IndentGuidesToggle<enter>
 nmap <F8> :TagbarToggle<CR>
 imap <F8> :TagbarToggle<CR>
 """"
+
 set fileencodings=utf-8,cp932
 map <F1> <Esc>:w<Enter>
 map <A-x> <Esc>:set filetype=
@@ -181,6 +185,7 @@ Bundle 'tpope/vim-rails.git'
 Bundle 'tpope/vim-surround'
 "状态栏
 Bundle 'Lokaltog/vim-powerline'
+"Bundle 'bling/vim-airline'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'jiangmiao/auto-pairs.git'
 Bundle 'kien/ctrlp.vim.git'
@@ -201,7 +206,7 @@ Bundle 'mileszs/ack.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'oguzbilgic/sexy-railscasts-theme'
 Bundle 'sickill/vim-monokai'
-Bundle 'mattn/zencoding-vim'
+Bundle 'mattn/emmet-vim'
 Bundle 'nathanaelkane/vim-indent-guides'
 "Bundle 'rstacruz/sparkup'
 "让vim光标正常的插件
@@ -230,8 +235,8 @@ Bundle 'danro/rename.vim'
 Bundle 'rking/ag.vim'
 
 "git 
-"Bundle 'airblade/vim-gitgutter'
-"Bundle 'tpope/vim-fugitive'
+Bundle 'airblade/vim-gitgutter'
+Bundle 'tpope/vim-fugitive'
 
 " non github repos
 "Bundle 'git://git.wincent.com/command-t.git'
@@ -278,6 +283,62 @@ nnoremap <silent> <C-F4> :call fuf#givencmd#launch('', 0, '选择命令>', g:fuf
 map <S-F4> <Esc>:FufFile<CR>
 map <F4> <Esc>:FufBuffer<CR>
 
+"window between tab
+function! MoveToPrevTab()
+  "there is only one window
+  if tabpagenr('$') == 1 && winnr('$') == 1
+    return
+  endif
+  "preparing new window
+  let l:tab_nr = tabpagenr('$')
+  let l:cur_buf = bufnr('%')
+  if tabpagenr() != 1
+    close!
+    if l:tab_nr == tabpagenr('$')
+      tabprev
+    endif
+    vert topleft split
+  else
+    close!
+    exe "0tabnew"
+  endif
+  "opening current buffer in new window
+  exe "b".l:cur_buf
+endfunc
+
+function! MoveToNextTab()
+  "there is only one window
+  if tabpagenr('$') == 1 && winnr('$') == 1
+    return
+  endif
+  "preparing new window
+  let l:tab_nr = tabpagenr('$')
+  let l:cur_buf = bufnr('%')
+  if tabpagenr() < tab_nr
+    close!
+    if l:tab_nr == tabpagenr('$')
+      tabnext
+    endif
+    vert topleft split
+  else
+    close!
+    tabnew
+  endif
+  "opening current buffer in new window
+  exe "b".l:cur_buf
+endfunc
+
+
+
+"nnoremap <A-.> :call MoveToNextTab()<CR>
+"nnoremap <A-,> :call MoveToPrevTab()<CR>
+map <C-m> :call MoveToNextTab()<CR><C-w>H
+map <C-n> :call MoveToPrevTab()<CR><C-w>H
+
+
+
+
+
 "cp ~/.vimrc ~/StudyNotes/vimrc.txt
 
 "colorscheme blackboard
@@ -323,6 +384,8 @@ else
     "let &t_EI = "\<Esc>]50;CursorShape=0\x7"
   "endif
 endif
+
+"let g:airline_powerline_fonts = 1
 
 let g:Powerline_symbols = 'fancy'
 let g:AutoPairsShortcutFastWrap='<C-g>'
