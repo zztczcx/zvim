@@ -2,6 +2,7 @@ autocmd! bufwritepost .vimrc source ~/.vimrc
 autocmd! BufReadPost Gemfile set ft=ruby
 
 set encoding=utf-8
+set fileencodings=utf-8,ucs-bom,gb18030,big5,default " 检测编码顺序"
 set showtabline=2
 set laststatus=2
 set guitablabel=%t
@@ -18,10 +19,10 @@ set nobackup
 set copyindent
 set winaltkeys=no
 set autoindent  
-set shiftwidth=2
-set softtabstop=2
+set shiftwidth=4
+set softtabstop=4
 
-set tabstop=2 shiftwidth=2 expandtab
+set tabstop=4 shiftwidth=4 expandtab
 autocmd FileType python set tabstop=4|set shiftwidth=4|set expandtab
 "set backspace=4
 set ruler  
@@ -30,7 +31,8 @@ set incsearch
 set ignorecase 
 
 "代码折叠
-set fdm=manual
+"set fdm=manual
+set nofoldenable 
 "搜索高亮
 set hlsearch
 set mouse=n
@@ -180,7 +182,7 @@ call vundle#rc()
 " required! 
 Bundle 'gmarik/vundle'
 " original repos on github
-Bundle 'tpope/vim-rails.git'
+"Bundle 'tpope/vim-rails.git'
 "方便添加删除两端 括号 标签之类的
 Bundle 'tpope/vim-surround'
 "状态栏
@@ -192,7 +194,7 @@ Bundle 'kien/ctrlp.vim.git'
 Bundle 'scrooloose/nerdtree.git'
 Bundle 'msanders/snipmate.vim.git'
 Bundle 'kchmck/vim-coffee-script.git'
-Bundle 'uggedal/go-vim'
+"Bundle 'uggedal/go-vim'
 "代码补完
 Bundle 'Shougo/neocomplcache'
 "Bundle 'tpope/vim-markdown'
@@ -204,8 +206,8 @@ Bundle 'flazz/vim-colorschemes'
 Bundle 'mileszs/ack.vim'
 "提示代码calss method之类的
 Bundle 'majutsushi/tagbar'
-Bundle 'oguzbilgic/sexy-railscasts-theme'
-Bundle 'sickill/vim-monokai'
+"Bundle 'oguzbilgic/sexy-railscasts-theme'
+"Bundle 'sickill/vim-monokai'
 Bundle 'mattn/emmet-vim'
 Bundle 'nathanaelkane/vim-indent-guides'
 "Bundle 'rstacruz/sparkup'
@@ -227,6 +229,7 @@ Bundle 'surround.vim'
 
 "for c programming
 Bundle 'vim-scripts/cscope.vim'
+Bundle 'chazy/cscope_maps'
 "Bundle 'vim-scripts/ctags.vim'
 Bundle 'vim-scripts/ctags.vim--Johnson'
 Bundle 'vim-scripts/taglist.vim'
@@ -237,6 +240,26 @@ Bundle 'rking/ag.vim'
 "git 
 Bundle 'airblade/vim-gitgutter'
 Bundle 'tpope/vim-fugitive'
+
+"python
+Bundle 'klen/python-mode'
+Bundle 'Glench/Vim-Jinja2-Syntax'
+
+"yaml
+Bundle 'stephpy/vim-yaml'
+
+"go
+Bundle 'fatih/vim-go'
+
+"erlang
+Bundle 'elixir-lang/vim-elixir'
+"Bundle 'jimenezrick/vimerl'
+
+"typescript
+Bundle 'leafgarland/typescript-vim'
+
+"quickfix enter
+"Bundle 'yssl/QFEnter' 有bug
 
 " non github repos
 "Bundle 'git://git.wincent.com/command-t.git'
@@ -258,6 +281,46 @@ filetype plugin indent on     " required!
 "Bundle 'snipMate'
 
 """"""""""""""""""bundle end""""""""""""""""""""
+
+"cscope mapping
+nnoremap <leader>fa :call cscope#findInteractive(expand('<cword>'))<CR>
+nnoremap <leader>l :call ToggleLocationList()<CR>
+
+" s: Find this C symbol
+nnoremap  <leader>fs :call cscope#find('s', expand('<cword>'))<CR>
+" g: Find this definition
+nnoremap  <leader>fg :call cscope#find('g', expand('<cword>'))<CR>
+" d: Find functions called by this function
+nnoremap  <leader>fd :call cscope#find('d', expand('<cword>'))<CR>
+" c: Find functions calling this function
+nnoremap  <leader>fc :call cscope#find('c', expand('<cword>'))<CR>
+" t: Find this text string
+nnoremap  <leader>ft :call cscope#find('t', expand('<cword>'))<CR>
+" e: Find this egrep pattern
+nnoremap  <leader>fe :call cscope#find('e', expand('<cword>'))<CR>
+" f: Find this file
+nnoremap  <leader>ff :call cscope#find('f', expand('<cword>'))<CR>
+" i: Find files #including this file
+nnoremap  <leader>fi :call cscope#find('i', expand('<cword>'))<CR>
+
+" go mapping
+au FileType go nmap <leader>r <Plug>(go-run)
+au FileType go nmap <leader>b <Plug>(go-build)
+au FileType go nmap <leader>t <Plug>(go-test)
+au FileType go nmap <leader>c <Plug>(go-coverage)
+
+"python-mode setting
+let g:pymode_rope = 0
+let g:pymode_rope_complete_on_dot = 0
+let g:pymode_rope_completion = 0
+let g:pymode_lint_unmodified = 1
+let NERDTreeIgnore = ['\.pyc$']
+
+"sudo write
+noremap <Leader>W :w !sudo tee % > /dev/null
+
+
+
 let g:ackprg="ack-grep -H --nocolor --nogroup --column"  "ack用的 
 
 " F4和shift+F4调用FuzzyFinder命令行菜单"
@@ -332,7 +395,7 @@ endfunc
 
 "nnoremap <A-.> :call MoveToNextTab()<CR>
 "nnoremap <A-,> :call MoveToPrevTab()<CR>
-map <C-m> :call MoveToNextTab()<CR><C-w>H
+"map <C-m> :call MoveToNextTab()<CR><C-w>H
 map <C-n> :call MoveToPrevTab()<CR><C-w>H
 
 
@@ -403,6 +466,7 @@ let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
+set completeopt-=preview
 
 filetype plugin on
 set background=dark
